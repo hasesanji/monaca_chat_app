@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/angular/angular.min.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <script src="lib/onsenui/js/angular-onsenui.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+  <script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDjmxHN2asidfYN0X0kpgOsr9P01oUa26o",
+    authDomain: "chatdemo-20b57.firebaseapp.com",
+    databaseURL: "https://chatdemo-20b57.firebaseio.com",
+    projectId: "chatdemo-20b57",
+    storageBucket: "chatdemo-20b57.appspot.com",
+    messagingSenderId: "337048739297"
+  };
+  firebase.initializeApp(config);
+  </script>
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded');
+        
+    }, false);
+    window.addEventListener('load', function() {
+        console.log('load');
+        checkCurrentUser()
+    }, false);
+    document.addEventListener('deviceready', function() {
+        console.log('deviceready');
+    }, false);  
+    document.addEventListener('init', function(event) {
+         // event.target ＝ <ons-page> 要素
+        if (event.target.matches('#login_page')) {
+            console.log('init_login_page');
+        }
+        if (event.target.matches('#home_page')) {
+            console.log('init_home_page');
+        }
+
+    }, false);  
+  
+    ons.bootstrap()
+      .controller('AppController', function() {
+      });
+    ons.ready(function() {
+        console.log("Onsen UI is ready!");
+    });
+  </script>
+  
+</head>
+<body>
+    <!-- アプリ全体をナビゲーションでページ管理を行う -->
+    <ons-navigator var="navi" page="login.html">
+    </ons-navigator> 
+     
+    <!-- ナビゲーション管理下のページ -->
+    <ons-template id="login.html">
+        <ons-page id="login_page">
+            <ons-toolbar>
+                <div class="center">ログイン</div>
+            </ons-toolbar>
+ 
+            <div style="text-align: center">
+                <br>
+                メールアドレス<br>
+                <input type="text" id="mailaddress"/>
+                <br>
+                <br>
+                パスワード<br>
+                <input type="password" id="password"/>
+                <br>
+                <br>
+                <ons-button onclick="userLogin(false)">
+                    ログイン
+                </ons-button>
+                <ons-button onclick="userLogin(true)">
+                    新規登録
+                </ons-button>
+                <span id="login_error_msg"></span>
+            </div>
+        </ons-page>
+    </ons-template>
+
+    <!-- ナビゲーション管理下のページ -->
+    <ons-template id="home.html">
+        <ons-page id="home_page">
+            <ons-sliding-menu var="slidingMenu"
+                              menu-page="menu.html"
+                              main-page="main.html"
+                              swipeable="false">
+            </ons-sliding-menu>
+        </ons-page>
+    </ons-template>
+ 
+    <!-- 左に位置するメニューページ -->
+    <ons-template id="menu.html">
+        <ons-page id="menu_page">
+            <ons-list>
+                <ons-list-item modifier="tappable" onclick="slidingMenu.setMainPage('main.html', {closeMenu: true})">メイン</ons-list-item>
+                <ons-list-item modifier="tappable" onclick="logout()")>ログアウト</ons-list-item>
+            </ons-list>
+        </ons-page>
+    </ons-template>
+     
+    <!-- 右に位置するメインページ -->
+    <!-- スライディングメニューを構成するが、ナビゲーションの管理下でもある -->
+
+    <ons-template id="main.html">
+        <ons-page id="main_page">
+            <ons-toolbar>
+                <div class="left">
+                  <ons-toolbar-button onclick="slidingMenu.toggle()">
+                    <ons-icon icon="md-menu"></ons-icon>
+                  </ons-toolbar-button>
+                </div>
+                <div class="center">メイン</div>
+            </ons-toolbar>
+            
+           <!-- メッセージを打ち込む部分 -->
+            <div style="text-align: center">
+                <textarea name="" id="jsi-msg" cols="30" rows="3"></textarea>
+                <ons-button onclick="sendMessage()">
+                    send message!
+                </ons-button>
+            <!-- チャット内容が動的に生成される部分 -->
+            <ul id="jsi-board" style="list-style:none;">
+            </ul>            
+            </div>
+    
+
+            
+            
+        </ons-page>
+    </ons-template>
+
+</body>
+</html>
